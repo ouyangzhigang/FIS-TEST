@@ -1,0 +1,103 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>demo</title>
+<style>
+.sliders-bar, .sliders-bar2 {
+    width:302px;
+    height:6px;
+    background:#0e0e1b;
+    -webkit-border-radius:3px;
+    position:absolute;
+    top:80px;
+    left:78px;
+    box-shadow:0 1px 2px rgba(255, 255, 255, 0.1);
+    -webkit-box-shadow:0 1px 2px rgba(255, 255, 255, 0.1);
+    -moz-box-shadow:0 1px 2px rgba(255, 255, 255, 0.1);
+    -ms-box-shadow:0 1px 2px rgba(255, 255, 255, 0.1);
+}
+
+.sliders-bar-handle {
+    position:absolute;
+    left:48%;
+    top:-10px;
+    width:27px;
+    height:30px;
+    background:blue;
+    cursor:pointer
+}
+.c{position: absolute;left: 77px;top: 66px;}
+</style>
+</head>
+<body>
+<div class="c">
+    <div class="sliders-bar">
+        <div class="sliders-bar-handle" id="div1"></div>
+    </div>
+</div>
+
+</body>
+<script type="text/javascript" src="jquery-2.1.1.min.js"></script>
+<script type="text/javascript">
+var arr1 = ['9','8','1','2','5','4','3'];
+var arr2 = [];
+
+console.log(arr2.splice.apply(arr1,[3,3]));
+
+window.onload = function(){
+    new Drag('#div1');
+}
+console.log(Drag.prototype);
+function Drag(obj){
+    var that = this;
+    this.obj = $(obj);
+    this.mw = this.obj.parent().width();
+    this.disX = 0;
+    this.init();
+}
+
+Drag.prototype = {
+    constructor: Drag,
+    init: function(){
+        var that = this;
+        this.obj.mousedown(function(e){
+            that.down(e);
+            return false;
+        });
+    },
+
+    down: function(ev){
+        var that = this;
+        that.disX = ev.clientX - this.obj.position().left;
+        document.onmousemove = function (ev){
+            that.move(ev);
+        };
+
+        document.onmouseup=function (){
+            that.fnUp();
+        };
+    },
+
+    move: function(ev){
+        var that = this;
+        var l = ev.clientX - that.disX;
+        var _w = this.obj.width()/2;
+        if(l < 0 - _w){
+            l = 0 - _w;
+        }else if(l > that.mw - _w){
+            l = that.mw - _w;
+        }
+        var per = (l + _w)/that.mw * 100;
+        this.obj.css('left', l);
+        // this.obj.children().html(parseInt(per) + '%');
+        // this.obj.siblings().css('width', per + '%');
+    },
+
+    fnUp: function(){
+        document.onmousemove = null;
+        document.onmouseup = null;
+    }
+}
+</script>
+</html>
